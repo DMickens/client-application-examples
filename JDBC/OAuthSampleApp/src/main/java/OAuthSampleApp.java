@@ -53,38 +53,31 @@ public class OAuthSampleApp implements Callable<Integer> {
     @Option(names = { "-t", "--token-url" }, description = "Token URL")
     private String tokenUrl = "";
 
-    @Option(names = { "-sc", "--scope" }, description = "Scope")
-    private String scope = "";
-
-    @Option(names = { "-v", "--validate-hostname" }, description = "Validate Hostname")
-    private String validateHost = "";
-
-    private static Connection connectToDB(String host, String port, String dbName, String accessToken,
-            String clientSecret, String refreshToken, String clientId, String tokenUrl, String scope, String validateHost) throws SQLException {
+    private static Connection connectToDB(String host, String port, String dbName, String accessToken, String clientSecret, String refreshToken, 
+                                          String clientId, String tokenUrl) throws SQLException 
+    {
         Properties jdbcOptions = new Properties();
         jdbcOptions.put("oauthaccesstoken", accessToken);
         jdbcOptions.put("oauthrefreshtoken", refreshToken);
 
-	// Put these options into static json config
-	String jsonConfig = "{\"oauthtokenurl\" : \"" + tokenUrl + "\", " +  
-	"\"oauthclientid\" : \"" + clientId + "\", " + 
-	"\"oauthclientsecret\" : \"" + clientSecret + "\", " +
-	"\"oauthvalidatehostname\" : \"" + validateHost + "\", " +
-	"\"oauthscope\" : \"" + scope + "\"" +
-	"}";
-	System.out.println(jsonConfig);
-	jdbcOptions.put("oauthjsonconfig", jsonConfig);
+	    // Put these options into static json config
+	    String jsonConfig = "{\"oauthtokenurl\" : \"" + tokenUrl + "\", " +  
+	                        "\"oauthclientid\" : \"" + clientId + "\", " + 
+	                        "\"oauthclientsecret\" : \"" + clientSecret + "\"}";
+	    System.out.println(jsonConfig);
+	    jdbcOptions.put("oauthjsonconfig", jsonConfig);
 
-        return DriverManager.getConnection(
-                "jdbc:vertica://" + host + ":" + port + "/" + dbName, jdbcOptions);
+        return DriverManager.getConnection("jdbc:vertica://" + host + ":" + port + "/" + dbName, jdbcOptions);
     }
 
-    private static ResultSet executeQuery(Connection conn) throws SQLException {
+    private static ResultSet executeQuery(Connection conn) throws SQLException 
+    {
         Statement stmt = conn.createStatement();
         return stmt.executeQuery("SELECT user_id, user_name FROM USERS ORDER BY user_id");
     }
 
-    private static void printResults(ResultSet rs) throws SQLException {
+    private static void printResults(ResultSet rs) throws SQLException 
+    {
         int rowIdx = 1;
         while (rs.next()) {
             System.out.println(rowIdx + ". " + rs.getString(1).trim() + " " + rs.getString(2).trim());
@@ -93,10 +86,10 @@ public class OAuthSampleApp implements Callable<Integer> {
     }
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() throws Exception 
+    {
         try {
-            Connection conn = connectToDB(host, port, dbName, accessToken, clientSecret, refreshToken, clientId,
-                    tokenUrl, scope, validateHost);
+            Connection conn = connectToDB(host, port, dbName, accessToken, clientSecret, refreshToken, clientId, tokenUrl);
             ResultSet rs = executeQuery(conn);
             printResults(rs);
             conn.close();
@@ -114,7 +107,8 @@ public class OAuthSampleApp implements Callable<Integer> {
         return 0;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) 
+    {
         int exitCode = new CommandLine(new OAuthSampleApp()).execute(args);
         System.exit(exitCode);
     }
