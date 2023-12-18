@@ -1,7 +1,7 @@
 # Pre-requisites
 
 - Maven (tested with version 3.8.4)
-- Java (tested with version 6)
+- Java (tested with version 8)
 
 This application has been tested on MacOS, Linux, and Windows.
 
@@ -27,6 +27,4 @@ Possible options:
 -i, --client-id <client ID>
 -s, --client-secret <client secret>
 -t, --token-url <token URL>
--sc, --scope <scope>
--v, --validate-hostname
 ```
